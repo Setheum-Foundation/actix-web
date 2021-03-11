@@ -45,10 +45,10 @@ default = ["compress", "cookies"]
 compress = ["actix-http/compress", "awc/compress"]
 
 # support for cookies
-cookies = ["actix-http/cookies", "awc/cookies"]
+cookies = ["cookie", "awc/cookies"]
 
 # secure cookies feature
-secure-cookies = ["actix-http/secure-cookies"]
+secure-cookies = ["cookie/secure"]
 
 # openssl
 openssl = ["tls-openssl", "actix-tls/accept", "actix-tls/openssl", "awc/openssl"]
@@ -92,6 +92,7 @@ awc = { version = "3.0.0-beta.3", default-features = false }
 
 ahash = "0.7"
 bytes = "1"
+cookie = { version = "0.15", features = ["percent-encode"], optional = true }
 derive_more = "0.99.5"
 either = "1.5.3"
 encoding_rs = "0.8"

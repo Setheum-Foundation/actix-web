@@ -97,9 +97,9 @@ use std::convert::TryFrom;
 use std::rc::Rc;
 use std::time::Duration;
 
-#[cfg(feature = "cookies")]
-pub use actix_http::cookie;
 pub use actix_http::{client::Connector, http};
+#[cfg(feature = "cookies")]
+pub use cookie;
 
 use actix_http::{
     client::{TcpConnect, TcpConnectError, TcpConnection},

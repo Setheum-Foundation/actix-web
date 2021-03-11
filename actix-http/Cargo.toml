@@ -34,12 +34,6 @@ rustls = ["actix-tls/rustls"]
 # enable compression support
 compress = ["flate2", "brotli2"]
 
-# support for cookies
-cookies = ["cookie"]
-
-# support for secure cookies
-secure-cookies = ["cookies", "cookie/secure"]
-
 # trust-dns as client dns resolver
 trust-dns = ["trust-dns-resolver"]
 
@@ -56,7 +50,6 @@ bitflags = "1.2"
 bytes = "1"
 bytestring = "1"
 cfg-if = "1"
-cookie = { version = "0.14.1", features = ["percent-encode"], optional = true }
 derive_more = "0.99.5"
 encoding_rs = "0.8"
 futures-core = { version = "0.3.7", default-features = false, features = ["alloc"] }

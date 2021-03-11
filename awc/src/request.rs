@@ -4,12 +4,12 @@ use std::time::Duration;
 use std::{fmt, net};
 
 use bytes::Bytes;
+#[cfg(feature = "cookies")]
+use cookie::{Cookie, CookieJar};
 use futures_core::Stream;
 use serde::Serialize;
 
 use actix_http::body::Body;
-#[cfg(feature = "cookies")]
-use actix_http::cookie::{Cookie, CookieJar};
 use actix_http::http::header::{self, IntoHeaderPair};
 use actix_http::http::{
     uri, ConnectionType, Error as HttpError, HeaderMap, HeaderValue, Method, Uri, Version,
@@ -124,10 +124,10 @@ impl ClientRequest {
         &self.head.method
     }
 
-    #[doc(hidden)]
     /// Set HTTP version of this request.
     ///
-    /// By default requests's HTTP version depends on network stream
+    /// By default request's HTTP version depends on network stream.
+    #[doc(hidden)]
     #[inline]
     pub fn version(mut self, version: Version) -> Self {
         self.head.version = version;
@@ -276,7 +276,7 @@ impl ClientRequest {
     /// async fn main() {
     ///     let resp = awc::Client::new().get("https://www.rust-lang.org")
     ///         .cookie(
-    ///             awc::http::Cookie::build("name", "value")
+    ///             cookie::Cookie::build("name", "value")
     ///                 .domain("www.rust-lang.org")
     ///                 .path("/")
     ///                 .secure(true)

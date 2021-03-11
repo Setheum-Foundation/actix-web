@@ -99,12 +99,12 @@ pub mod test;
 pub(crate) mod types;
 pub mod web;
 
-#[cfg(feature = "cookies")]
-pub use actix_http::cookie;
 pub use actix_http::Response as HttpResponse;
 pub use actix_http::{body, http, Error, HttpMessage, ResponseError, Result};
 pub use actix_rt as rt;
 pub use actix_web_codegen::*;
+#[cfg(feature = "cookies")]
+pub use cookie;
 
 pub use crate::app::App;
 pub use crate::extract::FromRequest;

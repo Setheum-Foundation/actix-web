@@ -6,8 +6,6 @@ use std::sync::mpsc;
 use std::{fmt, net, thread, time};
 
 use actix_codec::{AsyncRead, AsyncWrite, Framed};
-#[cfg(feature = "cookies")]
-use actix_http::cookie::Cookie;
 use actix_http::http::header::{ContentType, IntoHeaderPair};
 use actix_http::http::{Method, StatusCode, Uri, Version};
 use actix_http::test::TestRequest as HttpTestRequest;
@@ -18,6 +16,8 @@ use actix_service::{map_config, IntoService, IntoServiceFactory, Service, Servic
 use awc::error::PayloadError;
 use awc::{Client, ClientRequest, ClientResponse, Connector};
 use bytes::{Bytes, BytesMut};
+#[cfg(feature = "cookies")]
+use cookie::Cookie;
 use futures_core::Stream;
 use futures_util::future::ok;
 use futures_util::StreamExt;
@@ -439,10 +439,17 @@ impl TestRequest {
         self
     }
 
-    /// Set cookie for this request.
+    /// Add cookie for this request.
     #[cfg(feature = "cookies")]
     pub fn cookie(mut self, cookie: Cookie<'_>) -> Self {
-        self.req.cookie(cookie);
+        use actix_http::http::header;
+
+        let cookie = cookie.stripped().encoded().to_string();
+
+        if !cookie.is_empty() {
+            self.req.append_header((header::COOKIE, cookie));
+        }
+
         self
     }
 
@@ -658,7 +665,7 @@ where
         let local_addr = tcp.local_addr().unwrap();
         let factory = factory.clone();
         let cfg = cfg.clone();
-        let ctimeout = cfg.client_timeout;
+        let timeout = cfg.client_timeout;
         let builder = Server::build().workers(1).disable_signals();
 
         let srv = match cfg.stream {
@@ -666,21 +673,21 @@ where
                 HttpVer::Http1 => builder.listen("test", tcp, move || {
                     let cfg = AppConfig::new(false, local_addr, format!("{}", local_addr));
                     HttpService::build()
-                        .client_timeout(ctimeout)
+                        .client_timeout(timeout)
                         .h1(map_config(factory(), move |_| cfg.clone()))
                         .tcp()
                 }),
                 HttpVer::Http2 => builder.listen("test", tcp, move || {
                     let cfg = AppConfig::new(false, local_addr, format!("{}", local_addr));
                     HttpService::build()
-                        .client_timeout(ctimeout)
+                        .client_timeout(timeout)
                         .h2(map_config(factory(), move |_| cfg.clone()))
                         .tcp()
                 }),
                 HttpVer::Both => builder.listen("test", tcp, move || {
                     let cfg = AppConfig::new(false, local_addr, format!("{}", local_addr));
                     HttpService::build()
-                        .client_timeout(ctimeout)
+                        .client_timeout(timeout)
                         .finish(map_config(factory(), move |_| cfg.clone()))
                         .tcp()
                 }),
@@ -690,21 +697,21 @@ where
                 HttpVer::Http1 => builder.listen("test", tcp, move || {
                     let cfg = AppConfig::new(true, local_addr, format!("{}", local_addr));
                     HttpService::build()
-                        .client_timeout(ctimeout)
+                        .client_timeout(timeout)
                         .h1(map_config(factory(), move |_| cfg.clone()))
                         .openssl(acceptor.clone())
                 }),
                 HttpVer::Http2 => builder.listen("test", tcp, move || {
                     let cfg = AppConfig::new(true, local_addr, format!("{}", local_addr));
                     HttpService::build()
-                        .client_timeout(ctimeout)
+                        .client_timeout(timeout)
                         .h2(map_config(factory(), move |_| cfg.clone()))
                         .openssl(acceptor.clone())
                 }),
                 HttpVer::Both => builder.listen("test", tcp, move || {
                     let cfg = AppConfig::new(true, local_addr, format!("{}", local_addr));
                     HttpService::build()
-                        .client_timeout(ctimeout)
+                        .client_timeout(timeout)
                         .finish(map_config(factory(), move |_| cfg.clone()))
                         .openssl(acceptor.clone())
                 }),
@@ -714,21 +721,21 @@ where
                 HttpVer::Http1 => builder.listen("test", tcp, move || {
                     let cfg = AppConfig::new(true, local_addr, format!("{}", local_addr));
                     HttpService::build()
-                        .client_timeout(ctimeout)
+                        .client_timeout(timeout)
                         .h1(map_config(factory(), move |_| cfg.clone()))
                         .rustls(config.clone())
                 }),
                 HttpVer::Http2 => builder.listen("test", tcp, move || {
                     let cfg = AppConfig::new(true, local_addr, format!("{}", local_addr));
                     HttpService::build()
-                        .client_timeout(ctimeout)
+                        .client_timeout(timeout)
                         .h2(map_config(factory(), move |_| cfg.clone()))
                         .rustls(config.clone())
                 }),
                 HttpVer::Both => builder.listen("test", tcp, move || {
                     let cfg = AppConfig::new(true, local_addr, format!("{}", local_addr));
                     HttpService::build()
-                        .client_timeout(ctimeout)
+                        .client_timeout(timeout)
                         .finish(map_config(factory(), move |_| cfg.clone()))
                         .rustls(config.clone())
                 }),

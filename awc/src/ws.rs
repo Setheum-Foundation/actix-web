@@ -31,9 +31,10 @@ use std::net::SocketAddr;
 use std::rc::Rc;
 use std::{fmt, str};
 
-use actix_codec::Framed;
 #[cfg(feature = "cookies")]
-use actix_http::cookie::{Cookie, CookieJar};
+use cookie::{Cookie, CookieJar};
+
+use actix_codec::Framed;
 use actix_http::{ws, Payload, RequestHead};
 use actix_rt::time::timeout;
 use actix_service::Service;

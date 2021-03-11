@@ -7,6 +7,7 @@ use std::time::Duration;
 
 use brotli2::write::BrotliEncoder;
 use bytes::Bytes;
+use cookie::Cookie;
 use flate2::read::GzDecoder;
 use flate2::write::GzEncoder;
 use flate2::Compression;
@@ -21,9 +22,9 @@ use actix_http_test::test_server;
 use actix_service::{map_config, pipeline_factory};
 use actix_web::{
     dev::{AppConfig, BodyEncoding},
-    http::{header, Cookie},
+    http::header,
     middleware::Compress,
-    test, web, App, Error, HttpMessage, HttpRequest, HttpResponse,
+    test, web, App, Error, HttpRequest, HttpResponse,
 };
 use awc::error::{JsonPayloadError, PayloadError, SendRequestError};
 
@@ -718,6 +719,7 @@ async fn test_body_streaming_implicit() {
     assert_eq!(bytes, Bytes::from_static(STR.as_ref()));
 }
 
+#[cfg(feature = "cookies")]
 #[actix_rt::test]
 async fn test_client_cookie_handling() {
     use std::io::{Error as IoError, ErrorKind};
@@ -770,7 +772,10 @@ async fn test_client_cookie_handling() {
                     } else {
                         // Send some cookies back
                         Ok::<_, Error>(
-                            HttpResponse::Ok().cookie(cookie1).cookie(cookie2).finish(),
+                            HttpResponse::Ok()
+                                .append_header((header::SET_COOKIE, cookie1.encoded().to_string()))
+                                .append_header((header::SET_COOKIE, cookie2.encoded().to_string()))
+                                .finish(),
                         )
                     }
                 }

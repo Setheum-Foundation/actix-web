@@ -79,7 +79,6 @@ extern crate tls_rustls as rustls;
 mod app;
 mod app_service;
 mod config;
-mod cookie_ext;
 mod data;
 pub mod error;
 mod extract;
@@ -101,14 +100,14 @@ pub(crate) mod types;
 pub mod web;
 
 #[cfg(feature = "cookies")]
-pub use ::cookie;
+mod cookie_ext;
+
 pub use actix_http::Response as HttpResponse;
 pub use actix_http::{body, http, Error, HttpMessage, ResponseError, Result};
 pub use actix_rt as rt;
 pub use actix_web_codegen::*;
 
 pub use crate::app::App;
-pub use crate::cookie_ext::{RequestCookieExt, ResponseCookieExt};
 pub use crate::extract::FromRequest;
 pub use crate::request::HttpRequest;
 pub use crate::resource::Resource;
@@ -118,6 +117,12 @@ pub use crate::scope::Scope;
 pub use crate::server::HttpServer;
 // TODO: is exposing the error directly really needed
 pub use crate::types::{Either, EitherExtractError};
+
+#[cfg(feature = "cookies")]
+pub use {
+    crate::cookie_ext::{RequestCookieExt, ResponseCookieExt},
+    ::cookie,
+};
 
 pub mod dev {
     //! The `actix-web` prelude for library developers

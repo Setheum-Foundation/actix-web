@@ -9,7 +9,6 @@ struct Cookies(Vec<Cookie<'static>>);
 
 pub trait RequestCookieExt: HttpMessage {
     /// Load request cookies.
-    #[cfg(feature = "cookies")]
     fn cookies(&self) -> Result<Ref<'_, Vec<Cookie<'static>>>, CookieParseError> {
         if self.extensions().get::<Cookies>().is_none() {
             let mut cookies = Vec::new();
@@ -30,7 +29,6 @@ pub trait RequestCookieExt: HttpMessage {
     }
 
     /// Return request cookie.
-    #[cfg(feature = "cookies")]
     fn cookie(&self, name: &str) -> Option<Cookie<'static>> {
         if let Ok(cookies) = self.cookies() {
             for cookie in cookies.iter() {

@@ -4,7 +4,11 @@
 ### Chaged
 * `client::Connector` type now only have one generic type for `actix_service::Service`. [#2063]
 
+### Removed
+* Cookie handling. `actix-web` and `awc` retain cookie support. [#2065]
+
 [#2063]: https://github.com/actix/actix-web/pull/2063
+[#2065]: https://github.com/actix/actix-web/pull/2065
 
 
 ## 3.0.0-beta.4 - 2021-03-08

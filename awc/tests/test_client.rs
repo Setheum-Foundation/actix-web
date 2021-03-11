@@ -773,8 +773,14 @@ async fn test_client_cookie_handling() {
                         // Send some cookies back
                         Ok::<_, Error>(
                             HttpResponse::Ok()
-                                .append_header((header::SET_COOKIE, cookie1.encoded().to_string()))
-                                .append_header((header::SET_COOKIE, cookie2.encoded().to_string()))
+                                .append_header((
+                                    header::SET_COOKIE,
+                                    cookie1.encoded().to_string(),
+                                ))
+                                .append_header((
+                                    header::SET_COOKIE,
+                                    cookie2.encoded().to_string(),
+                                ))
                                 .finish(),
                         )
                     }

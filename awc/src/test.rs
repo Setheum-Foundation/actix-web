@@ -1,13 +1,15 @@
 //! Test helpers for actix http client to use during testing.
 use std::convert::TryFrom;
 
-#[cfg(feature = "cookies")]
-use actix_http::http::header::{self, HeaderValue};
 use actix_http::http::header::{Header, IntoHeaderValue};
 use actix_http::http::{Error as HttpError, HeaderName, StatusCode, Version};
 use actix_http::{h1, Payload, ResponseHead};
 use bytes::Bytes;
-use cookie::{Cookie, CookieJar};
+#[cfg(feature = "cookies")]
+use {
+    actix_http::http::header::{self, HeaderValue},
+    cookie::{Cookie, CookieJar},
+};
 
 use crate::ClientResponse;
 

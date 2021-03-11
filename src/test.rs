@@ -35,13 +35,13 @@ use crate::rmap::ResourceMap;
 use crate::service::{ServiceRequest, ServiceResponse};
 use crate::{Error, HttpRequest, HttpResponse};
 
-/// Create service that always responds with `HttpResponse::Ok()`
+/// Create service that always responds with 200 OK and no body.
 pub fn ok_service(
 ) -> impl Service<ServiceRequest, Response = ServiceResponse<Body>, Error = Error> {
     default_service(StatusCode::OK)
 }
 
-/// Create service that responds with response with specified status code
+/// Create service that always responds with specified status code and no body.
 pub fn default_service(
     status_code: StatusCode,
 ) -> impl Service<ServiceRequest, Response = ServiceResponse<Body>, Error = Error> {
@@ -83,7 +83,7 @@ where
 {
     try_init_service(app)
         .await
-        .expect("service initilization failed")
+        .expect("service initialization failed")
 }
 
 /// Fallible version of init_service that allows testing data factory errors.

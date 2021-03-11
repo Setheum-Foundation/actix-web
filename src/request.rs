@@ -2,13 +2,16 @@ use std::cell::{Ref, RefCell, RefMut};
 use std::rc::Rc;
 use std::{fmt, net, str};
 
-use actix_http::http::{header, HeaderMap, Method, Uri, Version};
+use actix_http::http::{HeaderMap, Method, Uri, Version};
 use actix_http::{Error, Extensions, HttpMessage, Message, Payload, RequestHead};
 use actix_router::{Path, Url};
-#[cfg(feature = "cookies")]
-use cookie::{Cookie, ParseError as CookieParseError};
 use futures_util::future::{ok, Ready};
 use smallvec::SmallVec;
+#[cfg(feature = "cookies")]
+use {
+    actix_http::http::header,
+    cookie::{Cookie, ParseError as CookieParseError},
+};
 
 use crate::app_service::AppInitServiceState;
 use crate::config::AppConfig;
@@ -17,8 +20,8 @@ use crate::extract::FromRequest;
 use crate::info::ConnectionInfo;
 use crate::rmap::ResourceMap;
 
+/// An HTTP Request.
 #[derive(Clone)]
-/// An HTTP Request
 pub struct HttpRequest {
     /// # Panics
     /// `Rc<HttpRequestInner>` is used exclusively and NO `Weak<HttpRequestInner>`

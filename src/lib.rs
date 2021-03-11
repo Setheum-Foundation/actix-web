@@ -79,6 +79,7 @@ extern crate tls_rustls as rustls;
 mod app;
 mod app_service;
 mod config;
+mod cookie_ext;
 mod data;
 pub mod error;
 mod extract;
@@ -93,23 +94,22 @@ mod responder;
 mod rmap;
 mod route;
 mod scope;
-mod cookie_ext;
 mod server;
 mod service;
 pub mod test;
 pub(crate) mod types;
 pub mod web;
 
+#[cfg(feature = "cookies")]
+pub use ::cookie;
 pub use actix_http::Response as HttpResponse;
 pub use actix_http::{body, http, Error, HttpMessage, ResponseError, Result};
 pub use actix_rt as rt;
 pub use actix_web_codegen::*;
-#[cfg(feature = "cookies")]
-pub use ::cookie;
 
 pub use crate::app::App;
-pub use crate::extract::FromRequest;
 pub use crate::cookie_ext::{RequestCookieExt, ResponseCookieExt};
+pub use crate::extract::FromRequest;
 pub use crate::request::HttpRequest;
 pub use crate::resource::Resource;
 pub use crate::responder::Responder;
